@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+	xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+	<edmx:DataServices>
+		<Schema Namespace="Shared.Resources"
+			xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityType Name="Tile">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<Property Name="provider" Type="Shared.Resources.TileProvider" />
+				<Property Name="providerId" Type="Edm.String" />
+				<Property Name="displayName" Type="Edm.String" />
+				<Property Name="logoUrl" Type="Edm.String" />
+				<Property Name="fastLaunchUrl" Type="Edm.String" />
+				<Property Name="persistentLaunchUrl" Type="Edm.String" />
+				<Property Name="assignmentType" Type="Shared.Resources.AssignmentType" />
+				<Property Name="description" Type="Edm.String" />
+				<Property Name="redirectUrl" Type="Edm.String" />
+				<Property Name="extensionTargetUrl" Type="Edm.String" />
+			</EntityType>
+			<EntityType Name="Collection">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="displayName" Type="Edm.String" />
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<Property Name="itemIds" Type="Collection(Edm.String)" />
+				<Property Name="viewPermissions" Type="Shared.Resources.CollectionViewPermissions" />
+				<Property Name="template" Type="Shared.Resources.CollectionTemplate" />
+				<Property Name="view" Type="Shared.Resources.CollectionView" />
+				<NavigationProperty Name="items" Type="Collection(Shared.Resources.Tile)" />
+			</EntityType>
+			<EntityType Name="Order">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<Property Name="itemIds" Type="Collection(Edm.String)" />
+				<Property Name="viewPermissions" Type="Shared.Resources.ListViewPermissions" />
+				<Property Name="template" Type="Shared.Resources.ListTemplate_1OfCollection" />
+				<Property Name="view" Type="Shared.Resources.ListView" />
+				<NavigationProperty Name="items" Type="Collection(Shared.Resources.Collection)" />
+			</EntityType>
+			<EntityType Name="User">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<Property Name="tenantId" Type="Edm.String" />
+				<NavigationProperty Name="tenant" Type="Shared.Resources.Tenant">
+					<ReferentialConstraint Property="tenantId" ReferencedProperty="id" />
+				</NavigationProperty>
+				<NavigationProperty Name="collectionOrder" Type="Shared.Resources.Order" />
+				<NavigationProperty Name="collections" Type="Collection(Shared.Resources.Collection)" />
+				<NavigationProperty Name="tiles" Type="Collection(Shared.Resources.Tile)" />
+			</EntityType>
+			<EntityType Name="Tenant">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<NavigationProperty Name="collectionOrder" Type="Shared.Resources.Order" />
+				<NavigationProperty Name="collections" Type="Collection(Shared.Resources.Collection)" />
+				<NavigationProperty Name="tiles" Type="Collection(Shared.Resources.Tile)" />
+			</EntityType>
+			<ComplexType Name="ListViewPermissions">
+				<Property Name="canAddItems" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="canRemoveItems" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="canReorderItems" Type="Edm.Boolean" Nullable="false" />
+			</ComplexType>
+			<ComplexType Name="CollectionViewPermissions" BaseType="Shared.Resources.ListViewPermissions">
+				<Property Name="canRenameList" Type="Edm.Boolean" Nullable="false" />
+			</ComplexType>
+			<ComplexType Name="CollectionTemplate">
+				<Property Name="displayName" Type="Edm.String" />
+				<Property Name="description" Type="Edm.String" />
+				<Property Name="isComplete" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="itemIds" Type="Collection(Edm.String)" />
+				<NavigationProperty Name="items" Type="Collection(Shared.Resources.Tile)" />
+			</ComplexType>
+			<ComplexType Name="ListView">
+				<Property Name="useViewOrder" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="explicitItemIds" Type="Collection(Edm.String)" />
+				<Property Name="hiddenItemIds" Type="Collection(Edm.String)" />
+			</ComplexType>
+			<ComplexType Name="CollectionView" BaseType="Shared.Resources.ListView">
+				<Property Name="displayName" Type="Edm.String" />
+			</ComplexType>
+			<ComplexType Name="ListTemplate_1OfCollection">
+				<Property Name="isComplete" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="itemIds" Type="Collection(Edm.String)" />
+				<NavigationProperty Name="items" Type="Collection(Shared.Resources.Collection)" />
+			</ComplexType>
+			<EnumType Name="TileProvider">
+				<Member Name="AzureADThirdParty" Value="0" />
+				<Member Name="OfficeFirstParty" Value="1" />
+				<Member Name="CustomUrl" Value="2" />
+			</EnumType>
+			<EnumType Name="AssignmentType">
+				<Member Name="Optional" Value="0" />
+				<Member Name="Granted" Value="1" />
+			</EnumType>
+		</Schema>
+		<Schema Namespace="Shared.Resources.V2.Collections"
+			xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityType Name="BaseCollection">
+				<Key>
+					<PropertyRef Name="id" />
+				</Key>
+				<Property Name="id" Type="Edm.String" Nullable="false" />
+				<Property Name="displayName" Type="Edm.String" Nullable="false" />
+				<Property Name="description" Type="Edm.String" Nullable="false" />
+				<Property Name="collectionType" Type="Shared.Resources.V2.Collections.CollectionType" Nullable="false" />
+				<Property Name="collectionPermissions" Type="Shared.Resources.V2.Collections.CollectionPermissions" Nullable="false" />
+				<Property Name="supportedCustomizations" Type="Shared.Resources.V2.Collections.SupportedCustomizations" Nullable="false" />
+				<Property Name="appTileIds" Type="Collection(Edm.String)" />
+			</EntityType>
+			<EntityType Name="TenantCollection" BaseType="Shared.Resources.V2.Collections.BaseCollection" />
+			<ComplexType Name="CollectionPermissions">
+				<Property Name="owners" Type="Shared.Resources.V2.Collections.AccessDetails" />
+				<Property Name="viewers" Type="Shared.Resources.V2.Collections.AccessDetails" />
+			</ComplexType>
+			<ComplexType Name="AccessDetails">
+				<Property Name="userIds" Type="Collection(Edm.String)" />
+				<Property Name="groupIds" Type="Collection(Edm.String)" />
+			</ComplexType>
+			<ComplexType Name="SupportedCustomizations">
+				<Property Name="canAddItems" Type="Edm.Boolean" />
+				<Property Name="canRemoveItems" Type="Edm.Boolean" />
+				<Property Name="canReorderItems" Type="Edm.Boolean" />
+				<Property Name="canRenameCollection" Type="Edm.Boolean" />
+			</ComplexType>
+			<EnumType Name="CollectionType">
+				<Member Name="TenantCollection" Value="0" />
+				<Member Name="PrivateCollection" Value="1" />
+				<Member Name="SystemCollection" Value="2" />
+			</EnumType>
+		</Schema>
+		<Schema Namespace="Clients.AppManagement"
+			xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityType Name="AppTile" BaseType="Shared.Resources.Tile">
+				<Property Name="appId" Type="Edm.String" />
+				<Property Name="servicePrincipalId" Type="Edm.String" />
+				<Property Name="fontColor" Type="Edm.String" />
+				<Property Name="homepageUrl" Type="Edm.String" />
+				<Property Name="isEnabled" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="isEnterpriseApp" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="isHidden" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="isMicrosoftFirstParty" Type="Edm.Boolean" Nullable="false" />
+				<Property Name="logoBackgroundColor" Type="Edm.String" />
+				<Property Name="providerType" Type="Edm.String" />
+				<Property Name="publisher" Type="Edm.String" />
+				<Property Name="appLaunchUrl" Type="Edm.String" />
+				<Property Name="ssoType" Type="Microsoft.Identity.MyApps.Launcher.Models.SingleSignOnType" />
+			</EntityType>
+		</Schema>
+		<Schema Namespace="Microsoft.Identity.MyApps.Launcher.Models"
+			xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EnumType Name="SingleSignOnType">
+				<Member Name="ConsentedFederatedSso" Value="0" />
+				<Member Name="ExternalLinkedSso" Value="1" />
+				<Member Name="FirstPartySso" Value="2" />
+				<Member Name="OfficeSso" Value="3" />
+				<Member Name="OnPremSso" Value="4" />
+				<Member Name="PasswordSso" Value="5" />
+				<Member Name="SamlIdpInitiated" Value="6" />
+				<Member Name="SamlSpInitiated" Value="7" />
+				<Member Name="Unknown" Value="8" />
+			</EnumType>
+		</Schema>
+		<Schema Namespace="Default"
+			xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityContainer Name="Container">
+				<EntitySet Name="users" EntityType="Shared.Resources.User">
+					<NavigationPropertyBinding Path="tenant" Target="tenants" />
+				</EntitySet>
+				<EntitySet Name="tenants" EntityType="Shared.Resources.Tenant" />
+				<Singleton Name="me" Type="Shared.Resources.User">
+					<NavigationPropertyBinding Path="tenant" Target="tenants" />
+				</Singleton>
+				<Singleton Name="myorganization" Type="Shared.Resources.Tenant" />
+			</EntityContainer>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
